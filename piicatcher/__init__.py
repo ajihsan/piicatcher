@@ -81,3 +81,8 @@ class Password(PiiType):
     name = "Password"
     type = "password"
     pass
+
+class KTP(PiiType):
+    name = "KTP"
+    type = "ktp"
+    pass

@@ -23,6 +23,7 @@ from piicatcher import (
     PoBox,
     UserName,
     ZipCode,
+    KTP,
 )
 from piicatcher.detectors import DatumDetector, MetadataDetector, register_detector
 from piicatcher.generators import SMALL_TABLE_MAX, _filter_text_columns
@@ -47,23 +48,24 @@ class ColumnNameRegexDetector(MetadataDetector):
         Person: re.compile(
             "^.*(firstname|fname|lastname|lname|"
             "fullname|maidenname|_name|"
-            "nickname|name_suffix|name|person).*$",
+            "nickname|name_suffix|name|person|nama|nama_lengkap|nama_panjang).*$",
             re.IGNORECASE,
         ),
         Email: re.compile("^.*(email|e-mail|mail).*$", re.IGNORECASE),
         BirthDate: re.compile(
             "^.*(date_of_birth|dateofbirth|dob|"
-            "birthday|date_of_death|dateofdeath|birthdate).*$",
+            "birthday|date_of_death|dateofdeath|birthdate|tanggal_lahir).*$",
             re.IGNORECASE,
         ),
-        Gender: re.compile("^.*(gender).*$", re.IGNORECASE),
+        Gender: re.compile("^.*(gender|jenis_kelamin).*$", re.IGNORECASE),
         Nationality: re.compile("^.*(nationality).*$", re.IGNORECASE),
         Address: re.compile(
-            "^.*(address|city|state|county|country|zone|borough).*$",
+            "^.*(address|city|state|county|country|zone|borough|"
+            "alamat|provinsi|kota|kabupaten|kecamatan|kelurahan|desa|nomor_rumah).*$",
             re.IGNORECASE,
         ),
         ZipCode: re.compile(
-            "^.*(zipcode|zip_code|postal|postal_code|zip).*$",
+            "^.*(zipcode|zip_code|postal|postal_code|zip|kode_pos|pos).*$",
             re.IGNORECASE,
         ),
         UserName: re.compile("^.*user(id|name|).*$", re.IGNORECASE),
@@ -76,12 +78,17 @@ class ColumnNameRegexDetector(MetadataDetector):
         PoBox: re.compile("^.*(po_box|pobox).*$", re.IGNORECASE),
         CreditCard: re.compile(
             "^.*(credit_card|cc_number|cc_num|creditcard|"
-            "credit_card_num|creditcardnumber).*$",
+            "credit_card_num|creditcardnumber|kartu_kredit|nomor_rekening|rekening).*$",
             re.IGNORECASE,
         ),
         Phone: re.compile(
             "^.*(phone|phone_number|phone_no|phone_num|"
-            "telephone|telephone_num|telephone_no).*$",
+            "telephone|telephone_num|telephone_no|telp|nomor_telepon|nomor_handphone|handphone|telepon|no_telepon|no_handphone).*$",
+            re.IGNORECASE,
+        ),
+        KTP: re.compile(
+            "^.*(ktp|ktp_name|ktp_number|nama_ktp|"
+            "nomor_ktp|ktp_nama|ktp_nomor|ktp_no).*$",
             re.IGNORECASE,
         ),
     }
@@ -146,6 +153,8 @@ class DatumRegexDetector(DatumDetector):
             return ZipCode()
         if CommonRegex.po_boxes(data):  # pylint: disable=no-member
             return PoBox()
+        if CommonRegex.ktp(data):  # pylint: disable=no-member
+            return KTP()
 
         return None
 
